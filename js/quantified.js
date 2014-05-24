@@ -1,6 +1,7 @@
 var db = new PouchDB('quantified-chrome', {adapter : 'websql'});
 var selectedId;
 var session = (new Date()).getTime();
+var cache = {};
 
 chrome.tabs.getSelected(function(tab) {
     selectedId = tab.id;
@@ -76,8 +77,17 @@ chrome.tabs.onRemoved.addListener(function(tabId){
 
 var getId = function(tabOrTabId, callback) {
     var generate = function(tab) {
+        // this takes care of scenario where tab is closed 
+        // and we no longer have a reference to tab data.
+        if (!tab && cache[tabOrTabId]) {
+            callback(cache[tabOrTabId]);
+            return;
+        }
+        
         var url = tab.url.replace(/^https?:\/\//, "");
-        callback(url+"-"+session+"-"+tab.id, tab);
+        var _id = url+"-"+session+"-"+tab.id, tab;
+        cache[tab.id] = _id;
+        callback(_id, tab);
     }
     
     if (typeof tabOrTabId === "number") {
