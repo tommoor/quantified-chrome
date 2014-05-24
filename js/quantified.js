@@ -47,8 +47,6 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
                         timeSelected: already + (now-existing.selectedAt)
                     });
                     
-                    console.log(existing, existing.selectedAt, now);
-            
                     console.debug('Tab deactivated ' + _id, data);
                     db.put(data, _id, existing._rev);
                 }
