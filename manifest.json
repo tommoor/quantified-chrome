@@ -1,0 +1,16 @@
+{
+	"name": "Quantified Chrome",
+	"version": "0.0.1",
+	"description": "Keep track of your browsing habits",
+	"background": {
+	    "scripts": [
+            "js/pouchdb-2.2.2.min.js",
+            "js/underscore.js", 
+            "js/quantified.js"
+        ]
+	},
+    "manifest_version": 2,
+    "permissions": [
+        "tabs"
+    ]
+}
