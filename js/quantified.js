@@ -14,9 +14,6 @@ chrome.tabs.onCreated.addListener(function(tab){
 chrome.tabs.onUpdated.addListener(function(tabId, changes){
     getId(tabId, function(_id, tab){
         db.get(_id, function(err, existing){
-            console.log('existing', existing);
-            console.log('changes', changes);
-        
             if (!existing || (existing.url && changes.url && (existing.url != changes.url))) {
             
                 console.debug('recording as new tab ' + _id);
@@ -30,9 +27,9 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
     getId(activeInfo.tabId, function(_id){
         db.get(_id, function(err, existing){
             if (existing) {
-                var data = {
+                var data = _.extend(existing, {
                     selectedAt: (new Date()).getTime()
-                };
+                });
             
                 console.debug('Tab activated ' + _id, data);
                 db.put(data, _id, existing._rev);
@@ -45,9 +42,12 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
             db.get(_id, function(err, existing){
                 if (existing) {
                     var now = (new Date()).getTime();
-                    var data = {
-                        timeSelected: existing.timeSelected + (now-existing.selectedAt)
-                    };
+                    var already = existing.timeSelected || 0;
+                    var data = _.extend(existing, {
+                        timeSelected: already + (now-existing.selectedAt)
+                    });
+                    
+                    console.log(existing, existing.selectedAt, now);
             
                     console.debug('Tab deactivated ' + _id, data);
                     db.put(data, _id, existing._rev);
@@ -64,10 +64,10 @@ chrome.tabs.onRemoved.addListener(function(tabId){
         db.get(_id, function(err, existing){
             if (existing) {
                 var now = (new Date()).getTime();
-                var data = {
+                var data = _.extend(existing, {
                     closedAt: now,
                     timeOpen: now-existing.openedAt
-                };
+                });
             
                 console.debug('Closing tab ' + _id, data);
                 db.put(data, _id, existing._rev);
@@ -104,6 +104,7 @@ var recordTab = function(tab) {
     getId(tab, function(_id){
         var data = {
             openedAt: (new Date()).getTime(),
+            selectedAt: (new Date()).getTime(),
             timeOpen: 0,
             timeSelected: 0,
             title: tab.title,
