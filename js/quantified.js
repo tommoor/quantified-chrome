@@ -1,4 +1,4 @@
-var db = new PouchDB('quantified-chrome', {adapter : 'websql'});
+var db = new PouchDB('quantified-chrome');
 var selectedId;
 var session = (new Date()).getTime();
 var cache = {};
