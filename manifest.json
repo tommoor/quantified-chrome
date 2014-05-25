@@ -6,9 +6,17 @@
 	    "scripts": [
             "js/pouchdb-2.2.2.min.js",
             "js/underscore.js", 
-            "js/quantified.js"
+            "js/quantified.js",
+            "js/browseraction.js"
         ]
 	},
+    "browser_action": {
+      "default_icon": {
+        "19": "images/icon19.png",
+        "38": "images/icon38.png" 
+      },
+      "default_title": "Quantified Chrome"
+    },
     "manifest_version": 2,
     "permissions": [
         "tabs"
